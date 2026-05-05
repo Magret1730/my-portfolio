@@ -14,7 +14,8 @@ import {
 import { home } from "./index";
 
 // IMPORTANT: Replace with your own domain address - it's used for SEO in meta tags and schema
-const baseURL: string = "https://demo.magic-portfolio.com";
+const baseURL: string = "http://localhost:3000";
+// const baseURL: string = "https://demo.magic-portfolio.com";
 
 const routes: RoutesConfig = {
   "/": true,
@@ -26,7 +27,7 @@ const routes: RoutesConfig = {
 
 const display: DisplayConfig = {
   location: true,
-  time: true,
+  time: false,
   themeSwitcher: true,
 };
 
@@ -76,7 +77,7 @@ const style: StyleConfig = {
   theme: "system", // dark | light | system
   neutral: "gray", // sand | gray | slate | mint | rose | dusk | custom
   brand: "cyan", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan | custom
-  accent: "red", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan | custom
+  accent: "cyan", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan | custom
   solid: "contrast", // color | contrast
   solidStyle: "flat", // flat | plastic
   border: "playful", // rounded | playful | conservative | sharp
@@ -188,16 +189,16 @@ const mailchimp: MailchimpConfig = {
 const schema: SchemaConfig = {
   logo: "",
   type: "Organization",
-  name: "Once UI",
+  name: "Abiodun (Magret) Oyedele",
   description: home.description,
-  email: "lorant@once-ui.com",
+  email: "belloabiodun17@gmail.com",
 };
 
 // social links
 const sameAs: SameAsConfig = {
-  threads: "https://www.threads.com/@once_ui",
-  linkedin: "https://www.linkedin.com/company/once-ui/",
-  discord: "https://discord.com/invite/5EyAQ4eNdS",
+  threads: "",
+  linkedin: "https://www.linkedin.com/in/oyedele-abiodun/",
+  discord: "",
 };
 
 // social sharing configuration for blog posts

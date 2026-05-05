@@ -2,20 +2,20 @@ import { About, Blog, Gallery, Home, Newsletter, Person, Social, Work } from "@/
 import { Line, Row, Text } from "@once-ui-system/core";
 
 const person: Person = {
-  firstName: "Selene",
-  lastName: "Yu",
-  name: `Selene Yu`,
-  role: "Design Engineer",
+  firstName: "Abiodun",
+  lastName: "Oyedele",
+  name: `Abiodun (Magret) Oyedele`,
+  role: "Software Engineer",
   avatar: "/images/avatar.jpg",
-  email: "example@gmail.com",
-  location: "Asia/Jakarta", // Expecting the IANA time zone identifier, e.g., 'Europe/Vienna'
-  languages: ["English", "Bahasa"], // optional: Leave the array empty if you don't want to display languages
+  email: "belloabiodun17@gmail.com",
+  location: "Canada",
+  languages: ["English"],
 };
 
 const newsletter: Newsletter = {
   display: true,
   title: <>Subscribe to {person.firstName}'s Newsletter</>,
-  description: <>My weekly newsletter about creativity and engineering</>,
+  description: <>Occasional notes on full-stack engineering, cloud, and AI</>,
 };
 
 const social: Social = [
@@ -25,25 +25,13 @@ const social: Social = [
   {
     name: "GitHub",
     icon: "github",
-    link: "https://github.com/once-ui-system",
+    link: "https://github.com/Magret1730",
     essential: true,
   },
   {
     name: "LinkedIn",
     icon: "linkedin",
-    link: "https://www.linkedin.com/company/once-ui/",
-    essential: true,
-  },
-  {
-    name: "Instagram",
-    icon: "instagram",
-    link: "https://www.instagram.com/once_ui/",
-    essential: false,
-  },
-  {
-    name: "Threads",
-    icon: "threads",
-    link: "https://www.threads.com/@once_ui",
+    link: "https://www.linkedin.com/in/oyedele-abiodun/",
     essential: true,
   },
   {
@@ -60,7 +48,12 @@ const home: Home = {
   label: "Home",
   title: `${person.name}'s Portfolio`,
   description: `Portfolio website showcasing my work as a ${person.role}`,
-  headline: <>Building bridges between design and code</>,
+  headline: (
+    <>
+      Software Engineer building full-stack applications with JavaScript, TypeScript, React, Node.js,
+      and Python, with a growing focus on cloud and AI.
+    </>
+  ),
   featured: {
     display: true,
     title: (
@@ -76,8 +69,9 @@ const home: Home = {
   },
   subline: (
     <>
-    I'm Selene, a design engineer at <Text as="span" size="xl" weight="strong">ONCE UI</Text>, where I craft intuitive <br /> user experiences. After hours, I build my own projects.
-</>
+      I’m {person.name}, based in Canada. I enjoy building scalable applications, debugging complex
+      systems, and turning ideas into real products.
+    </>
   ),
 };
 
@@ -85,7 +79,7 @@ const about: About = {
   path: "/about",
   label: "About",
   title: `About – ${person.name}`,
-  description: `Meet ${person.name}, ${person.role} from ${person.location}`,
+  description: `Meet ${person.name}, a ${person.role} based in Canada`,
   tableOfContent: {
     display: true,
     subItems: false,
@@ -94,22 +88,25 @@ const about: About = {
     display: true,
   },
   calendar: {
-    display: true,
-    link: "https://cal.com",
+    display: false,
+    link: "",
   },
   intro: {
     display: true,
     title: "Introduction",
     description: (
       <>
-        Selene is a Jakarta-based design engineer with a passion for transforming complex challenges
-        into simple, elegant design solutions. Her work spans digital interfaces, interactive
-        experiences, and the convergence of design and technology.
+        I’m a Software Engineer based in Canada with a strong full-stack background, working across
+        Typescript/React/Next.js on the frontend and Node.js on the backend. I enjoy building
+        scalable applications, debugging complex systems, and turning ideas into real products.
+        Recently, I’ve been deepening my skills in cloud technologies and exploring how AI can be
+        applied to solve real-world problems. I’m also actively involved in supporting learning
+        programs through TechNest Community.
       </>
     ),
   },
   work: {
-    display: true, // set to false to hide this section
+    display: false, // set to false to hide this section
     title: "Work Experience",
     experiences: [
       {
@@ -155,7 +152,7 @@ const about: About = {
     ],
   },
   studies: {
-    display: true, // set to false to hide this section
+    display: false, // set to false to hide this section
     title: "Studies",
     institutions: [
       {
@@ -173,14 +170,21 @@ const about: About = {
     title: "Technical skills",
     skills: [
       {
-        title: "Figma",
+        title: "Full-stack development",
         description: (
-          <>Able to prototype in Figma with Once UI with unnatural speed.</>
+          <>
+            Building production web apps with JavaScript/TypeScript, React/Next.js, Node.js, and
+            Python.
+          </>
         ),
         tags: [
           {
-            name: "Figma",
-            icon: "figma",
+            name: "JavaScript",
+            icon: "javascript",
+          },
+          {
+            name: "Next.js",
+            icon: "nextjs",
           },
         ],
         // optional: leave the array empty if you don't want to display images
@@ -200,22 +204,17 @@ const about: About = {
         ],
       },
       {
-        title: "Next.js",
+        title: "Cloud & AI (growing focus)",
         description: (
-          <>Building next gen apps with Next.js + Once UI + Supabase.</>
+          <>
+            Deepening my cloud skills and exploring how AI can be applied to solve real-world
+            problems.
+          </>
         ),
         tags: [
           {
-            name: "JavaScript",
-            icon: "javascript",
-          },
-          {
-            name: "Next.js",
-            icon: "nextjs",
-          },
-          {
-            name: "Supabase",
-            icon: "supabase",
+            name: "Cloud",
+            icon: "rocket",
           },
         ],
         // optional: leave the array empty if you don't want to display images
@@ -255,8 +254,7 @@ const gallery: Gallery = {
   label: "Gallery",
   title: `Photo gallery – ${person.name}`,
   description: `A photo collection by ${person.name}`,
-  // Images by https://lorant.one
-  // These are placeholder images, replace with your own
+  // Placeholder images shipped with the template — replace with your own
   images: [
     {
       src: "/images/gallery/horizontal-1.jpg",

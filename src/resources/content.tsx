@@ -1,14 +1,14 @@
-import { About, Blog, Gallery, Home, Newsletter, Person, Social, Work } from "@/types";
+import type { About, Blog, Gallery, Home, Newsletter, Person, Social, Work } from "@/types";
 import { Line, Row, Text } from "@once-ui-system/core";
 
 const person: Person = {
   firstName: "Abiodun",
   lastName: "Oyedele",
-  name: `Abiodun (Magret) Oyedele`,
+  name: "Abiodun (Magret) Oyedele",
   role: "Software Engineer",
   avatar: "/images/avatar.jpg",
   email: "belloabiodun17@gmail.com",
-  location: "Canada",
+  location: "America/St_Johns",
   languages: ["English"],
 };
 
@@ -48,29 +48,24 @@ const home: Home = {
   label: "Home",
   title: `${person.name}'s Portfolio`,
   description: `Portfolio website showcasing my work as a ${person.role}`,
-  headline: (
-    <>
-      Software Engineer building full-stack applications with JavaScript, TypeScript, React, Node.js,
-      and Python, with a growing focus on cloud and AI.
-    </>
-  ),
+  headline: <>Software Engineer building scalable full-stack applications.</>,
   featured: {
     display: true,
     title: (
       <Row gap="12" vertical="center">
-        <strong className="ml-4">Once UI</strong>{" "}
+        <strong className="ml-4">InstaloanX</strong>{" "}
         <Line background="brand-alpha-strong" vert height="20" />
         <Text marginRight="4" onBackground="brand-medium">
           Featured work
         </Text>
       </Row>
     ),
-    href: "/work/building-once-ui-a-customizable-design-system",
+    href: "/work/instaloanx",
   },
   subline: (
     <>
-      I’m {person.name}, based in Canada. I enjoy building scalable applications, debugging complex
-      systems, and turning ideas into real products.
+      I’m {person.name}, based in Canada. I enjoy working with JavaScript, TypeScript, React,
+      Node.js, and Python. Focused on cloud and AI.
     </>
   ),
 };
@@ -114,14 +109,8 @@ const about: About = {
         timeframe: "2022 - Present",
         role: "Senior Design Engineer",
         achievements: [
-          <>
-            Redesigned the UI/UX for the FLY platform, resulting in a 20% increase in user
-            engagement and 30% faster load times.
-          </>,
-          <>
-            Spearheaded the integration of AI tools into design workflows, enabling designers to
-            iterate 50% faster.
-          </>,
+          "Redesigned the UI/UX for the FLY platform, resulting in a 20% increase in user engagement and 30% faster load times.",
+          "Spearheaded the integration of AI tools into design workflows, enabling designers to iterate 50% faster.",
         ],
         images: [
           // optional: leave the array empty if you don't want to display images
@@ -138,14 +127,8 @@ const about: About = {
         timeframe: "2018 - 2022",
         role: "Lead Designer",
         achievements: [
-          <>
-            Developed a design system that unified the brand across multiple platforms, improving
-            design consistency by 40%.
-          </>,
-          <>
-            Led a cross-functional team to launch a new product line, contributing to a 15% increase
-            in overall company revenue.
-          </>,
+          "Developed a design system that unified the brand across multiple platforms, improving design consistency by 40%.",
+          "Led a cross-functional team to launch a new product line, contributing to a 15% increase in overall company revenue.",
         ],
         images: [],
       },

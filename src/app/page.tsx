@@ -66,7 +66,11 @@ export default function Home() {
             </RevealFx>
           )}
           <RevealFx translateY="4" fillWidth horizontal="center" paddingBottom="16">
-            <Heading wrap="balance" variant="display-strong-l">
+            <Heading
+              wrap="balance"
+              variant="display-strong-l"
+              style={{ fontWeight: 650, letterSpacing: "0.01em" }}
+            >
               {home.headline}
             </Heading>
           </RevealFx>

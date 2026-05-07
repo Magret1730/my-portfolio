@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   AvatarGroup,
   Carousel,
@@ -30,8 +31,14 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   avatars,
   link,
 }) => {
+  const [enter, setEnter] = useState(false);
+
+  useEffect(() => {
+    setEnter(true);
+  }, []);
+
   return (
-    <Column fillWidth gap="m">
+    <Column className="project-card" data-enter={enter} fillWidth gap="m">
       <Carousel
         sizes="(max-width: 960px) 100vw, 960px"
         items={images.map((image) => ({

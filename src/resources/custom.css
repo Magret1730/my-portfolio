@@ -29,3 +29,27 @@
   --scheme-accent-600-30: rgba(14,116,144,0.3);
   --scheme-accent-600-50: rgba(14,116,144,0.5);
 }
+
+@keyframes project-card-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.project-card {
+  opacity: 1;
+}
+
+.project-card[data-enter="true"] {
+  animation: project-card-fade-in 600ms ease-out both;
+  will-change: opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card[data-enter="true"] {
+    animation: none;
+  }
+}

@@ -1,6 +1,6 @@
 # my-portfolio
 
-**Production**: `https://hello-technest-website.vercel.app`
+**Production**: `https://my-portfolio-blond-ten-56.vercel.app`
 
 Personal portfolio site showcasing selected projects, experience, and writing — built with a modern Next.js stack and MDX content.
 

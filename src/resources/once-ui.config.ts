@@ -14,15 +14,14 @@ import type {
 import { home } from "./index";
 
 // IMPORTANT: Replace with your own domain address - it's used for SEO in meta tags and schema
-const baseURL: string = "http://localhost:3000";
-// const baseURL: string = "https://demo.magic-portfolio.com";
+const baseURL: string = "https://my-portfolio-blond-ten-56.vercel.app";
 
 const routes: RoutesConfig = {
   "/": true,
   "/about": true,
   "/work": true,
-  "/blog": true,
-  "/gallery": true,
+  "/blog": false,
+  "/gallery": false,
 };
 
 const display: DisplayConfig = {

@@ -44,6 +44,9 @@ export default TimeDisplay;
 
 export const Header = () => {
   const pathname = usePathname() ?? "";
+  const openMainPortfolio = () => {
+    window.open("https://magret.ca", "_blank", "noopener,noreferrer");
+  };
 
   return (
     <>
@@ -128,6 +131,16 @@ export const Header = () => {
                   </Row>
                 </>
               )}
+              <Row s={{ hide: true }}>
+                <ToggleButton
+                  prefixIcon="arrowUpRightFromSquare"
+                  label="Portfolio"
+                  onClick={openMainPortfolio}
+                />
+              </Row>
+              <Row hide s={{ hide: false }}>
+                <ToggleButton prefixIcon="arrowUpRightFromSquare" onClick={openMainPortfolio} />
+              </Row>
               {routes["/blog"] && (
                 <>
                   <Row s={{ hide: true }}>

@@ -1,9 +1,9 @@
 # Learning Portfolio (Cursor AI Workflow)
 
-[![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black)](https://my-portfolio-blond-ten-56.vercel.app)
+[![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black)](https://cursor-magret-portfolio.vercel.app)
 [![Next.js](https://img.shields.io/badge/Next.js-App%20Router-black)](https://nextjs.org/)
 
-**Live demo (Vercel)**: `https://my-portfolio-blond-ten-56.vercel.app`  
+**Live demo (Vercel)**: `https://cursor-magret-portfolio.vercel.app`  
 **Main portfolio**: `https://magret.ca` (professional site)
 
 ## Overview

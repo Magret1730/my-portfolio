@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { CustomMDX, ScrollToHash } from "@/components";
+import { Comments, CustomMDX, ScrollToHash } from "@/components";
 import {
   Meta,
   Schema,
@@ -153,6 +153,8 @@ export default async function Blog({ params }: { params: Promise<{ slug: string 
             title={post.metadata.title} 
             url={`${baseURL}${blog.path}/${post.slug}`} 
           />
+
+          <Comments postSlug={post.slug} />
 
           <Column fillWidth gap="40" horizontal="center" marginTop="40">
             <Line maxWidth="40" />

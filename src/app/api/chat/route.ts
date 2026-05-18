@@ -5,7 +5,13 @@ import { buildAiCloneSystemInstruction } from "@/lib/ai-clone-prompt";
 
 export const runtime = "nodejs";
 
-const MODEL_ID = "gemini-2.5-flash";
+/** Stable model id per https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash — override with GEMINI_MODEL if needed. */
+const DEFAULT_MODEL_ID = "gemini-2.5-flash";
+
+function resolveModelId(): string {
+  const raw = (process.env.GEMINI_MODEL || DEFAULT_MODEL_ID).trim();
+  return raw.replace(/^models\//, "");
+}
 
 const MAX_MESSAGES = 24;
 const MAX_MESSAGE_CHARS = 8000;
@@ -86,17 +92,18 @@ export async function POST(req: Request) {
   }
 
   const systemInstruction = buildAiCloneSystemInstruction();
+  const modelId = resolveModelId();
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
-      model: MODEL_ID,
+      model: modelId,
       systemInstruction,
     });
 
-    const history = toGeminiHistory(prior);
-    const chat = model.startChat({ history });
-    const result = await chat.sendMessage(last.content);
+    // Full thread in one request avoids startChat + systemInstruction edge cases on some API versions.
+    const contents = toGeminiHistory(messages);
+    const result = await model.generateContent({ contents });
     const text = result.response.text();
 
     return NextResponse.json({ reply: text });

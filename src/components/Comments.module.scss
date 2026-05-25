@@ -33,6 +33,7 @@
   border-radius: var(--radius-s);
   border: 1px dashed var(--neutral-alpha-medium);
   background: var(--neutral-alpha-weak);
+  color: var(--neutral-on-solid-strong);
 }
 
 .fileInput {
@@ -73,5 +74,17 @@
   max-height: 320px;
   height: auto;
   object-fit: contain;
-  border-radius: var(--radius-s);
+  border-radius: 12px;
+}
+
+.uploadPreview {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  max-height: 200px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid var(--neutral-alpha-medium);
+  background: var(--neutral-alpha-weak);
 }

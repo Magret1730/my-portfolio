@@ -61,7 +61,7 @@ export async function GET(req: Request) {
       { comments: commentsPayload },
       {
         headers: {
-          "Cache-Control": "s-maxage=30, stale-while-revalidate=60",
+          "Cache-Control": "private, no-store",
         },
       },
     );
@@ -93,6 +93,7 @@ export async function POST(req: Request) {
   }
 
   const { postSlug, body: commentBody, imageUrl } = validation.data;
+  const storedImageUrl = imageUrl?.trim() || null;
 
   try {
     const db = getDb();
@@ -103,7 +104,7 @@ export async function POST(req: Request) {
         userId: user.id,
         authorName: user.name,
         body: commentBody,
-        imageUrl: imageUrl ?? null,
+        imageUrl: storedImageUrl,
       })
       .returning({
         id: comments.id,

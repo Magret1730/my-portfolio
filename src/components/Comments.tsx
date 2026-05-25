@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { CommentAttachment } from "@/components/CommentAttachment";
+import { DeleteCommentModal } from "@/components/DeleteCommentModal";
 import styles from "@/components/Comments.module.scss";
 import { useAuthUser } from "@/lib/auth/useAuthUser";
 import { MAX_BODY } from "@/lib/comments";
@@ -90,6 +91,7 @@ export function Comments({ postSlug }: CommentsProps) {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const signInHref = `/auth/sign-in?redirect=${encodeURIComponent(pathname)}`;
@@ -100,7 +102,7 @@ export function Comments({ postSlug }: CommentsProps) {
     try {
       const res = await fetch(
         `/api/comments?postSlug=${encodeURIComponent(postSlug)}`,
-        { credentials: "include" },
+        { credentials: "include", cache: "no-store" },
       );
       const data = (await res.json()) as {
         comments?: Record<string, unknown>[];
@@ -153,10 +155,14 @@ export function Comments({ postSlug }: CommentsProps) {
       return;
     }
 
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+    }
+    setImageUrl(null);
+    setImagePreview(null);
+    setSelectedFileName(file.name);
     setError(null);
     setUploadingImage(true);
-    clearImage();
-    setSelectedFileName(file.name);
 
     const preview = URL.createObjectURL(file);
     setImagePreview(preview);
@@ -187,16 +193,8 @@ export function Comments({ postSlug }: CommentsProps) {
     }
   };
 
-  const handleDelete = async (commentId: string) => {
+  const performDelete = async (commentId: string) => {
     if (!sessionUser || deletingId) {
-      return;
-    }
-
-    if (
-      !window.confirm(
-        "Delete this comment? This cannot be undone.",
-      )
-    ) {
       return;
     }
 
@@ -213,6 +211,7 @@ export function Comments({ postSlug }: CommentsProps) {
         throw new Error(data.error || "Failed to delete comment.");
       }
       setCommentsList((prev) => prev.filter((c) => c.id !== commentId));
+      setDeleteTargetId(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete comment.");
     } finally {
@@ -232,6 +231,13 @@ export function Comments({ postSlug }: CommentsProps) {
       return;
     }
 
+    if (selectedFileName && !imageUrl) {
+      setError("Please wait for the image to finish uploading.");
+      return;
+    }
+
+    const attachedImageUrl = imageUrl?.trim() || undefined;
+
     setSubmitting(true);
     setError(null);
 
@@ -243,7 +249,7 @@ export function Comments({ postSlug }: CommentsProps) {
         body: JSON.stringify({
           postSlug,
           body: trimmedBody,
-          imageUrl: imageUrl ?? undefined,
+          imageUrl: attachedImageUrl,
           website,
         }),
       });
@@ -321,7 +327,7 @@ export function Comments({ postSlug }: CommentsProps) {
                     size="s"
                     variant="tertiary"
                     disabled={deletingId === comment.id}
-                    onClick={() => void handleDelete(comment.id)}
+                    onClick={() => setDeleteTargetId(comment.id)}
                   >
                     {deletingId === comment.id ? "Deleting…" : "Delete"}
                   </Button>
@@ -444,18 +450,13 @@ export function Comments({ postSlug }: CommentsProps) {
                   </Text>
                 )}
               </div>
-              {imagePreview && !uploadingImage && (
+              {imagePreview && (
                 <Column gap="8">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={imagePreview}
                     alt="Upload preview"
-                    style={{
-                      maxWidth: "100%",
-                      maxHeight: 200,
-                      borderRadius: "var(--radius-s)",
-                      objectFit: "contain",
-                    }}
+                    className={styles.uploadPreview}
                   />
                   <Button type="button" size="s" variant="tertiary" onClick={clearImage}>
                     Remove image
@@ -473,12 +474,35 @@ export function Comments({ postSlug }: CommentsProps) {
                 onChange={(e) => setWebsite(e.target.value)}
               />
             </div>
-            <Button type="submit" size="m" disabled={submitting || uploadingImage}>
+            <Button
+              type="submit"
+              size="m"
+              disabled={
+                submitting ||
+                uploadingImage ||
+                Boolean(selectedFileName && !imageUrl)
+              }
+            >
               {submitting ? "Posting…" : "Post comment"}
             </Button>
           </Column>
         </form>
       )}
+
+      <DeleteCommentModal
+        open={deleteTargetId !== null}
+        loading={deletingId !== null}
+        onCancel={() => {
+          if (!deletingId) {
+            setDeleteTargetId(null);
+          }
+        }}
+        onConfirm={() => {
+          if (deleteTargetId) {
+            void performDelete(deleteTargetId);
+          }
+        }}
+      />
     </Column>
   );
 }

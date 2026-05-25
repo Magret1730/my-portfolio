@@ -1,5 +1,9 @@
 "use client";
 
+import "@neondatabase/auth-ui/css";
+
+import { AuthProvider } from "@/components/AuthProvider";
+
 import {
   BorderStyle,
   ChartMode,
@@ -22,6 +26,7 @@ import { iconLibrary } from "../resources/icons";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
+    <AuthProvider>
     <LayoutProvider>
       <ThemeProvider
         brand={style.brand as Schemes}
@@ -53,5 +58,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
         </DataThemeProvider>
       </ThemeProvider>
     </LayoutProvider>
+    </AuthProvider>
   );
 }

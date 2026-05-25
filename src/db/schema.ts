@@ -5,8 +5,10 @@ export const comments = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     postSlug: text("post_slug").notNull(),
+    userId: text("user_id"),
     authorName: varchar("author_name", { length: 80 }).notNull(),
     body: text("body").notNull(),
+    imageUrl: text("image_url"),
     createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
       .notNull()
       .defaultNow(),

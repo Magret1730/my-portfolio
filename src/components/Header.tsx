@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Fade, Flex, Line, Row, ToggleButton } from "@once-ui-system/core";
 
 import { routes, display, person, about, blog, work, gallery } from "@/resources";
+import { AuthControls } from "./AuthControls";
 import { ThemeToggle } from "./ThemeToggle";
 import styles from "./Header.module.scss";
 
@@ -196,7 +197,8 @@ export const Header = () => {
             textVariant="body-default-s"
             gap="20"
           >
-            <Flex s={{ hide: true }}>
+            <Flex s={{ hide: true }} gap="16" vertical="center">
+              <AuthControls />
               {display.time && <TimeDisplay timeZone={person.location} />}
             </Flex>
           </Flex>

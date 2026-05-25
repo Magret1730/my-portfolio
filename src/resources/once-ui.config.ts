@@ -30,11 +30,8 @@ const display: DisplayConfig = {
   themeSwitcher: true,
 };
 
-// Enable password protection on selected routes
-// Set password in the .env file, refer to .env.example
-const protectedRoutes: ProtectedRoutesConfig = {
-  // Add any project routes you want to protect with a password
-};
+// Legacy password-route config (unused; auth is Neon Auth — see /auth/sign-in)
+const protectedRoutes: ProtectedRoutesConfig = {};
 
 // Import and set font for each variant
 import { Geist } from "next/font/google";

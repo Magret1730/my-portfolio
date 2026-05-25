@@ -1,6 +1,5 @@
 "use client";
 
-import { upload } from "@vercel/blob/client";
 import { Button, Column, Heading, Row, Spinner, Text } from "@once-ui-system/core";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -22,7 +21,42 @@ type CommentsProps = {
 };
 
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
-const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+
+const fieldStyle: React.CSSProperties = {
+  width: "100%",
+  resize: "vertical",
+  padding: "12px",
+  borderRadius: "var(--radius-s)",
+  border: "1px solid var(--neutral-alpha-medium)",
+  background: "var(--page-background)",
+  color: "inherit",
+  font: "inherit",
+};
+
+function normalizeComment(raw: Record<string, unknown>): Comment {
+  const created = raw.createdAt ?? raw.created_at;
+  let createdAt = new Date().toISOString();
+  if (typeof created === "string") {
+    createdAt = created;
+  } else if (created instanceof Date) {
+    createdAt = created.toISOString();
+  }
+
+  return {
+    id: String(raw.id ?? ""),
+    postSlug: String(raw.postSlug ?? raw.post_slug ?? ""),
+    authorName: String(raw.authorName ?? raw.author_name ?? "Anonymous"),
+    body: String(raw.body ?? raw.content ?? ""),
+    imageUrl:
+      typeof raw.imageUrl === "string"
+        ? raw.imageUrl
+        : typeof raw.image_url === "string"
+          ? raw.image_url
+          : null,
+    createdAt,
+  };
+}
 
 function formatCommentDate(value: string): string {
   const date = new Date(value);
@@ -57,12 +91,18 @@ export function Comments({ postSlug }: CommentsProps) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/comments?postSlug=${encodeURIComponent(postSlug)}`);
-      const data = (await res.json()) as { comments?: Comment[]; error?: string };
+      const res = await fetch(
+        `/api/comments?postSlug=${encodeURIComponent(postSlug)}`,
+        { credentials: "include" },
+      );
+      const data = (await res.json()) as {
+        comments?: Record<string, unknown>[];
+        error?: string;
+      };
       if (!res.ok) {
         throw new Error(data.error || "Failed to load comments.");
       }
-      setCommentsList(data.comments ?? []);
+      setCommentsList((data.comments ?? []).map(normalizeComment));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load comments.");
     } finally {
@@ -74,7 +114,7 @@ export function Comments({ postSlug }: CommentsProps) {
     loadComments();
   }, [loadComments]);
 
-  const clearImage = () => {
+  const clearImage = useCallback(() => {
     setImageUrl(null);
     if (imagePreview) {
       URL.revokeObjectURL(imagePreview);
@@ -83,7 +123,7 @@ export function Comments({ postSlug }: CommentsProps) {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-  };
+  }, [imagePreview]);
 
   const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -92,11 +132,16 @@ export function Comments({ postSlug }: CommentsProps) {
     }
 
     if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-      setError("Use a JPEG, PNG, or WebP image.");
+      setError("Use a JPEG, PNG, WebP, or GIF image.");
       return;
     }
     if (file.size > MAX_IMAGE_BYTES) {
       setError("Image must be 4 MB or smaller.");
+      return;
+    }
+
+    if (!sessionUser) {
+      setError("Sign in to upload images.");
       return;
     }
 
@@ -108,15 +153,26 @@ export function Comments({ postSlug }: CommentsProps) {
     setImagePreview(preview);
 
     try {
-      const blob = await upload(file.name, file, {
-        access: "public",
-        handleUploadUrl: "/api/blob/upload",
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        credentials: "include",
+        body: formData,
       });
-      setImageUrl(blob.url);
+      const data = (await res.json()) as { url?: string; error?: string };
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || "Failed to upload image.");
+      }
+      setImageUrl(data.url);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to upload image.");
       URL.revokeObjectURL(preview);
       setImagePreview(null);
+      setImageUrl(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     } finally {
       setUploadingImage(false);
     }
@@ -149,15 +205,17 @@ export function Comments({ postSlug }: CommentsProps) {
           website,
         }),
       });
-      const data = (await res.json()) as { comment?: Comment; error?: string };
+      const data = (await res.json()) as {
+        comment?: Record<string, unknown>;
+        error?: string;
+      };
       if (!res.ok) {
         throw new Error(data.error || "Failed to post comment.");
       }
-      if (data.comment) {
-        setCommentsList((prev) => [data.comment!, ...prev]);
-      }
+
       setBody("");
       clearImage();
+      await loadComments();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to post comment.");
     } finally {
@@ -198,15 +256,28 @@ export function Comments({ postSlug }: CommentsProps) {
         <Column fillWidth gap="16">
           {commentsList.map((comment, index) => (
             <Column key={comment.id} fillWidth gap="8">
-              {index > 0 && <hr style={{ border: "none", borderTop: "1px solid var(--neutral-border-weak)" }} />}
-              <Row gap="8" vertical="center">
-                <Text variant="label-strong-s">{comment.authorName}</Text>
+              {index > 0 && (
+                <hr
+                  style={{
+                    border: "none",
+                    borderTop: "1px solid var(--neutral-alpha-medium)",
+                  }}
+                />
+              )}
+              <Row gap="8" vertical="center" wrap>
+                <Text variant="label-strong-s" onBackground="neutral-strong">
+                  {comment.authorName}
+                </Text>
                 <Text variant="body-default-xs" onBackground="neutral-weak">
                   {formatCommentDate(comment.createdAt)}
                 </Text>
               </Row>
-              <Text variant="body-default-m">{comment.body}</Text>
-              {comment.imageUrl && (
+              {comment.body ? (
+                <Text variant="body-default-m" onBackground="neutral-strong">
+                  {comment.body}
+                </Text>
+              ) : null}
+              {comment.imageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={comment.imageUrl}
@@ -219,7 +290,7 @@ export function Comments({ postSlug }: CommentsProps) {
                     objectFit: "contain",
                   }}
                 />
-              )}
+              ) : null}
             </Column>
           ))}
         </Column>
@@ -247,7 +318,14 @@ export function Comments({ postSlug }: CommentsProps) {
         </Column>
       ) : (
         <form onSubmit={handleSubmit} style={{ width: "100%" }}>
-          <Column fillWidth gap="16" padding="l" radius="l" background="surface" border="neutral-alpha-weak">
+          <Column
+            fillWidth
+            gap="16"
+            padding="l"
+            radius="l"
+            background="surface"
+            border="neutral-alpha-weak"
+          >
             <Heading as="h3" variant="heading-strong-s">
               Leave a comment
             </Heading>
@@ -255,7 +333,12 @@ export function Comments({ postSlug }: CommentsProps) {
               Posting as {sessionUser.name}
             </Text>
             <Column gap="8" fillWidth>
-              <Text as="label" htmlFor="comment-body" variant="label-default-s">
+              <Text
+                as="label"
+                htmlFor="comment-body"
+                variant="label-default-s"
+                onBackground="neutral-strong"
+              >
                 Comment
               </Text>
               <textarea
@@ -266,26 +349,20 @@ export function Comments({ postSlug }: CommentsProps) {
                 maxLength={MAX_BODY}
                 required
                 rows={4}
-                style={{
-                  width: "100%",
-                  resize: "vertical",
-                  padding: "12px",
-                  borderRadius: "var(--radius-s)",
-                  border: "1px solid var(--neutral-border-medium)",
-                  background: "var(--page-background)",
-                  color: "var(--neutral-on-background-strong)",
-                  font: "inherit",
-                }}
+                style={fieldStyle}
               />
             </Column>
             <Column gap="8" fillWidth>
-              <Text variant="label-default-s">Image (optional)</Text>
+              <Text variant="label-default-s" onBackground="neutral-strong">
+                Image (optional)
+              </Text>
               <input
                 ref={fileInputRef}
                 type="file"
                 accept={ALLOWED_IMAGE_TYPES.join(",")}
                 onChange={handleImageSelect}
                 disabled={uploadingImage || submitting}
+                style={{ color: "inherit", font: "inherit" }}
               />
               {uploadingImage && (
                 <Row gap="8" vertical="center">
@@ -308,6 +385,11 @@ export function Comments({ postSlug }: CommentsProps) {
                       objectFit: "contain",
                     }}
                   />
+                  {imageUrl ? (
+                    <Text variant="body-default-xs" onBackground="neutral-weak">
+                      Image ready to attach
+                    </Text>
+                  ) : null}
                   <Button type="button" size="s" variant="tertiary" onClick={clearImage}>
                     Remove image
                   </Button>

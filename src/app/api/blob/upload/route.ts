@@ -6,7 +6,12 @@ import { getSessionUser } from "@/lib/auth/session";
 export const runtime = "nodejs";
 
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
-const ALLOWED_CONTENT_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
+const ALLOWED_CONTENT_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+] as const;
 
 export async function POST(request: Request): Promise<NextResponse> {
   const user = await getSessionUser();

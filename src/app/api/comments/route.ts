@@ -45,8 +45,18 @@ export async function GET(req: Request) {
       .orderBy(desc(comments.createdAt))
       .limit(LIST_LIMIT);
 
+    const commentsPayload = rows.map((row) => ({
+      id: row.id,
+      postSlug: row.postSlug,
+      authorName: row.authorName,
+      body: row.body,
+      imageUrl: row.imageUrl,
+      createdAt:
+        row.createdAt instanceof Date ? row.createdAt.toISOString() : row.createdAt,
+    }));
+
     return NextResponse.json(
-      { comments: rows },
+      { comments: commentsPayload },
       {
         headers: {
           "Cache-Control": "s-maxage=30, stale-while-revalidate=60",
@@ -102,7 +112,19 @@ export async function POST(req: Request) {
         createdAt: comments.createdAt,
       });
 
-    return NextResponse.json({ comment }, { status: 201 });
+    const commentPayload = {
+      id: comment.id,
+      postSlug: comment.postSlug,
+      authorName: comment.authorName,
+      body: comment.body,
+      imageUrl: comment.imageUrl,
+      createdAt:
+        comment.createdAt instanceof Date
+          ? comment.createdAt.toISOString()
+          : comment.createdAt,
+    };
+
+    return NextResponse.json({ comment: commentPayload }, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Failed to save comment." }, { status: 502 });
   }

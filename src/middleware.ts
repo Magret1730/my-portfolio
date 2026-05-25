@@ -47,6 +47,8 @@ export const config = {
   matcher: [
     "/auth/callback",
     "/api/auth/:path*",
+    "/api/upload",
+    "/api/comments",
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
   ],
 };

@@ -83,6 +83,7 @@ export default async function RootLayout({
                   const savedTheme = localStorage.getItem('data-theme');
                   const resolvedTheme = resolveTheme(savedTheme);
                   root.setAttribute('data-theme', resolvedTheme);
+                  root.classList.toggle('dark', resolvedTheme === 'dark');
                   
                   // Apply any saved style overrides
                   const styleKeys = Object.keys(config);
@@ -95,6 +96,7 @@ export default async function RootLayout({
                 } catch (e) {
                   console.error('Failed to initialize theme:', e);
                   document.documentElement.setAttribute('data-theme', 'dark');
+                  document.documentElement.classList.add('dark');
                 }
               })();
             `,

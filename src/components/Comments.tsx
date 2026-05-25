@@ -4,6 +4,7 @@ import { Button, Column, Heading, Row, Spinner, Text } from "@once-ui-system/cor
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import styles from "@/components/Comments.module.scss";
 import { useAuthUser } from "@/lib/auth/useAuthUser";
 import { MAX_BODY } from "@/lib/comments";
 
@@ -22,17 +23,7 @@ type CommentsProps = {
 
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-
-const fieldStyle: React.CSSProperties = {
-  width: "100%",
-  resize: "vertical",
-  padding: "12px",
-  borderRadius: "var(--radius-s)",
-  border: "1px solid var(--neutral-alpha-medium)",
-  background: "var(--page-background)",
-  color: "inherit",
-  font: "inherit",
-};
+const ACCEPT_IMAGE = ALLOWED_IMAGE_TYPES.join(",");
 
 function normalizeComment(raw: Record<string, unknown>): Comment {
   const created = raw.createdAt ?? raw.created_at;
@@ -80,6 +71,7 @@ export function Comments({ postSlug }: CommentsProps) {
   const [website, setWebsite] = useState("");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -116,6 +108,7 @@ export function Comments({ postSlug }: CommentsProps) {
 
   const clearImage = useCallback(() => {
     setImageUrl(null);
+    setSelectedFileName(null);
     if (imagePreview) {
       URL.revokeObjectURL(imagePreview);
     }
@@ -148,6 +141,7 @@ export function Comments({ postSlug }: CommentsProps) {
     setError(null);
     setUploadingImage(true);
     clearImage();
+    setSelectedFileName(file.name);
 
     const preview = URL.createObjectURL(file);
     setImagePreview(preview);
@@ -317,7 +311,7 @@ export function Comments({ postSlug }: CommentsProps) {
           </Button>
         </Column>
       ) : (
-        <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+        <form onSubmit={handleSubmit} className={styles.form}>
           <Column
             fillWidth
             gap="16"
@@ -344,34 +338,62 @@ export function Comments({ postSlug }: CommentsProps) {
               <textarea
                 id="comment-body"
                 name="body"
+                className={styles.field}
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
                 maxLength={MAX_BODY}
                 required
                 rows={4}
-                style={fieldStyle}
+                placeholder="Write your comment…"
               />
             </Column>
             <Column gap="8" fillWidth>
               <Text variant="label-default-s" onBackground="neutral-strong">
-                Image (optional)
+                Attach image (optional)
               </Text>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept={ALLOWED_IMAGE_TYPES.join(",")}
-                onChange={handleImageSelect}
-                disabled={uploadingImage || submitting}
-                style={{ color: "inherit", font: "inherit" }}
-              />
-              {uploadingImage && (
-                <Row gap="8" vertical="center">
-                  <Spinner size="s" />
+              <div className={styles.uploadZone}>
+                <input
+                  ref={fileInputRef}
+                  id="comment-image"
+                  className={styles.fileInput}
+                  type="file"
+                  accept={ACCEPT_IMAGE}
+                  onChange={handleImageSelect}
+                  disabled={uploadingImage || submitting}
+                />
+                <Row gap="12" vertical="center" wrap>
+                  <Button
+                    type="button"
+                    size="s"
+                    variant="secondary"
+                    disabled={uploadingImage || submitting}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    Choose image
+                  </Button>
                   <Text variant="body-default-s" onBackground="neutral-weak">
-                    Uploading…
+                    JPEG, PNG, WebP, or GIF · max 4 MB
                   </Text>
                 </Row>
-              )}
+                {selectedFileName && (
+                  <Text variant="body-default-s" onBackground="neutral-strong">
+                    Selected: {selectedFileName}
+                  </Text>
+                )}
+                {uploadingImage && (
+                  <Row gap="8" vertical="center">
+                    <Spinner size="s" />
+                    <Text variant="body-default-s" onBackground="neutral-weak">
+                      Uploading…
+                    </Text>
+                  </Row>
+                )}
+                {!uploadingImage && imageUrl && (
+                  <Text variant="body-default-s" onBackground="brand-weak">
+                    Image ready to attach
+                  </Text>
+                )}
+              </div>
               {imagePreview && !uploadingImage && (
                 <Column gap="8">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -385,11 +407,6 @@ export function Comments({ postSlug }: CommentsProps) {
                       objectFit: "contain",
                     }}
                   />
-                  {imageUrl ? (
-                    <Text variant="body-default-xs" onBackground="neutral-weak">
-                      Image ready to attach
-                    </Text>
-                  ) : null}
                   <Button type="button" size="s" variant="tertiary" onClick={clearImage}>
                     Remove image
                   </Button>

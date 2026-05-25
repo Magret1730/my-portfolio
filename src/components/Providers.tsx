@@ -5,6 +5,7 @@ import "@neondatabase/auth-ui/css";
 import { Suspense } from "react";
 
 import { AuthProvider } from "@/components/AuthProvider";
+import { ThemeClassSync } from "@/components/ThemeClassSync";
 
 import {
   BorderStyle,
@@ -30,6 +31,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <Suspense fallback={null}>
       <AuthProvider>
+        <ThemeClassSync />
     <LayoutProvider>
       <ThemeProvider
         brand={style.brand as Schemes}

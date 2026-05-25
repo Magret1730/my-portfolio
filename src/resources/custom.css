@@ -59,3 +59,40 @@ body {
     animation: none;
   }
 }
+
+/* Neon Auth UI: ensure dark tokens when site uses data-theme="dark" */
+html[data-theme="dark"] .dark,
+html[data-theme="dark"] {
+  --neon-background: oklch(14.5% 0 0);
+  --neon-foreground: oklch(98.5% 0 0);
+  --neon-card: oklch(20.5% 0 0);
+  --neon-card-foreground: oklch(98.5% 0 0);
+  --neon-popover: oklch(20.5% 0 0);
+  --neon-popover-foreground: oklch(98.5% 0 0);
+  --neon-primary: oklch(92.2% 0 0);
+  --neon-primary-foreground: oklch(20.5% 0 0);
+  --neon-secondary: oklch(26.9% 0 0);
+  --neon-secondary-foreground: oklch(98.5% 0 0);
+  --neon-muted: oklch(26.9% 0 0);
+  --neon-muted-foreground: oklch(70.8% 0 0);
+  --neon-accent: oklch(26.9% 0 0);
+  --neon-accent-foreground: oklch(98.5% 0 0);
+  --neon-border: oklch(100% 0 0 / 0.1);
+  --neon-input: oklch(100% 0 0 / 0.15);
+  --neon-ring: oklch(55.6% 0 0);
+}
+
+html[data-theme="dark"] main input,
+html[data-theme="dark"] main textarea,
+html[data-theme="dark"] main select,
+html[data-theme="dark"] .bg-card input,
+html[data-theme="dark"] .bg-card textarea {
+  color: var(--neon-foreground);
+  background-color: var(--neon-input);
+  border-color: var(--neon-border);
+}
+
+html[data-theme="dark"] main .bg-card {
+  background-color: var(--neon-card);
+  color: var(--neon-card-foreground);
+}

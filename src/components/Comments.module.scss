@@ -1,0 +1,48 @@
+.form {
+  width: 100%;
+}
+
+.field {
+  width: 100%;
+  resize: vertical;
+  padding: 12px;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--neutral-alpha-medium);
+  background: var(--surface-background);
+  color: var(--neutral-on-solid-strong);
+  font: inherit;
+  line-height: 1.5;
+
+  &::placeholder {
+    color: var(--neutral-on-solid-weak);
+    opacity: 1;
+  }
+
+  &:focus {
+    outline: 2px solid var(--brand-alpha-medium);
+    outline-offset: 1px;
+    border-color: var(--brand-border-medium);
+  }
+}
+
+.uploadZone {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--radius-s);
+  border: 1px dashed var(--neutral-alpha-medium);
+  background: var(--neutral-alpha-weak);
+}
+
+.fileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

@@ -12,6 +12,7 @@ export default async function AuthPage({ params }: { params: Promise<{ path: str
 
   return (
     <main
+      className="auth-page"
       style={{
         display: "flex",
         flexGrow: 1,
@@ -20,9 +21,12 @@ export default async function AuthPage({ params }: { params: Promise<{ path: str
         justifyContent: "center",
         padding: "var(--static-space-24)",
         minHeight: "60vh",
+        width: "100%",
       }}
     >
-      <AuthView path={path} />
+      <div style={{ width: "100%", maxWidth: 420 }}>
+        <AuthView path={path} />
+      </div>
     </main>
   );
 }

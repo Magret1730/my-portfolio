@@ -140,6 +140,7 @@ export function Comments({ postSlug }: CommentsProps) {
     try {
       const res = await fetch("/api/comments", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           postSlug,

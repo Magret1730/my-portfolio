@@ -2,6 +2,8 @@
 
 import "@neondatabase/auth-ui/css";
 
+import { Suspense } from "react";
+
 import { AuthProvider } from "@/components/AuthProvider";
 
 import {
@@ -26,7 +28,8 @@ import { iconLibrary } from "../resources/icons";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <AuthProvider>
+    <Suspense fallback={null}>
+      <AuthProvider>
     <LayoutProvider>
       <ThemeProvider
         brand={style.brand as Schemes}
@@ -58,6 +61,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         </DataThemeProvider>
       </ThemeProvider>
     </LayoutProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </Suspense>
   );
 }

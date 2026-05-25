@@ -2,9 +2,9 @@
 
 import { Button, Row, Text } from "@once-ui-system/core";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { getAuthClient } from "@/lib/auth/client";
+import { authClient } from "@/lib/auth/client";
 import { useAuthUser } from "@/lib/auth/useAuthUser";
 
 export function AuthControls() {
@@ -13,17 +13,13 @@ export function AuthControls() {
   const { user, loading, refresh } = useAuthUser();
   const [signingOut, setSigningOut] = useState(false);
 
-  useEffect(() => {
-    refresh();
-  }, [refresh, pathname]);
-
   const signInHref = `/auth/sign-in?redirect=${encodeURIComponent(pathname)}`;
 
   const handleSignOut = async () => {
     setSigningOut(true);
     try {
-      await getAuthClient().signOut();
-      refresh();
+      await authClient.signOut();
+      await refresh();
       router.refresh();
     } finally {
       setSigningOut(false);
@@ -50,7 +46,7 @@ export function AuthControls() {
         {user.name}
       </Text>
       <Button size="s" variant="tertiary" onClick={handleSignOut} disabled={signingOut}>
-        {signingOut ? "…" : "Sign out"}
+        {signingOut ? "Signing out…" : "Sign out"}
       </Button>
     </Row>
   );

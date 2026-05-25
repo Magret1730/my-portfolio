@@ -3,9 +3,9 @@
 import { NeonAuthUIProvider } from "@neondatabase/auth-ui";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState, type ComponentProps } from "react";
+import { useCallback, type ComponentProps } from "react";
 
-import { getAuthClient } from "@/lib/auth/client";
+import { authClient } from "@/lib/auth/client";
 
 type AuthProviderProps = {
   children: React.ReactNode;
@@ -20,11 +20,6 @@ function SafeLink({ href, ...props }: ComponentProps<typeof Link>) {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const router = useRouter();
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    setReady(true);
-  }, []);
 
   const navigate = useCallback(
     (href: string) => {
@@ -44,18 +39,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
     [router],
   );
 
-  if (!ready) {
-    return <>{children}</>;
-  }
-
-  const authClient = getAuthClient();
+  const onSessionChange = useCallback(() => {
+    router.refresh();
+  }, [router]);
 
   return (
     <NeonAuthUIProvider
       authClient={authClient}
       navigate={navigate}
       replace={replace}
-      onSessionChange={() => router.refresh()}
+      onSessionChange={onSessionChange}
       Link={SafeLink}
     >
       {children}

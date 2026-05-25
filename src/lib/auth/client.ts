@@ -1,20 +1,6 @@
 "use client";
 
-import { createAuthClient } from "@neondatabase/auth";
-import { BetterAuthReactAdapter } from "@neondatabase/auth/react/adapters";
+import { createAuthClient } from "@neondatabase/auth/next";
 
-type AuthClient = ReturnType<typeof createAuthClient>;
-
-let authClientInstance: AuthClient | null = null;
-
-export function getAuthClient(): AuthClient {
-  if (typeof window === "undefined") {
-    throw new Error("getAuthClient() can only be called in the browser.");
-  }
-  if (!authClientInstance) {
-    authClientInstance = createAuthClient(`${window.location.origin}/api/auth`, {
-      adapter: BetterAuthReactAdapter(),
-    });
-  }
-  return authClientInstance;
-}
+/** Same-origin proxy at /api/auth — must match [src/app/api/auth/[...path]/route.ts]. */
+export const authClient = createAuthClient();

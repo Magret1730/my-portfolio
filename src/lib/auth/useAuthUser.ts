@@ -13,7 +13,10 @@ type GetSessionResponse = {
 };
 
 function mapSessionUser(data: GetSessionResponse | null): AuthUser | null {
-  const user = data?.user ?? data?.session?.user;
+  if (!data || data === null) {
+    return null;
+  }
+  const user = data.user ?? data.session?.user;
   if (!user?.id) {
     return null;
   }
@@ -37,7 +40,7 @@ export function useAuthUser() {
         return;
       }
       const data = (await res.json()) as GetSessionResponse | null;
-      setUser(data ? mapSessionUser(data) : null);
+      setUser(mapSessionUser(data));
     } catch {
       setUser(null);
     } finally {

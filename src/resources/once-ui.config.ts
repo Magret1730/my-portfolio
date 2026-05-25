@@ -13,8 +13,12 @@ import type {
 } from "@/types";
 import { home } from "./index";
 
-// IMPORTANT: Replace with your own domain address - it's used for SEO in meta tags and schema
-const baseURL: string = "https://my-portfolio-blond-ten-56.vercel.app";
+// IMPORTANT: Production site URL — used for SEO, schema, and auth redirects on Vercel
+const baseURL: string =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL.replace(/^https?:\/\//, "")}`
+    : "https://cursor-magret-portfolio.vercel.app");
 
 const routes: RoutesConfig = {
   "/": true,

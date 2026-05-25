@@ -12,7 +12,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "sync:vercel-env": "node scripts/sync-vercel-env.mjs"
+    "sync:vercel-env": "node scripts/sync-vercel-env.mjs",
+    "neon:auth-domains": "node scripts/add-neon-auth-domains.mjs"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

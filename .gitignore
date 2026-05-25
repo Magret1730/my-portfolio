@@ -29,6 +29,7 @@ yarn-error.log*
 .env
 .env*.local
 .env.vercel
+.env.backup.20260524200927
 
 # vercel
 .vercel

@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth/server";
+import { withAuthOriginHeaders } from "@/lib/auth/app-origin";
 import {
   applyLocalAuthRequestCookies,
   applyLocalDevCookies,
@@ -17,7 +18,7 @@ async function withLocalCookies(
 }
 
 function withLocalRequest(request: Request): Request {
-  return applyLocalAuthRequestCookies(request);
+  return applyLocalAuthRequestCookies(withAuthOriginHeaders(request));
 }
 
 export async function handleAuthGet(

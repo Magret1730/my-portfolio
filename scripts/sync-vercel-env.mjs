@@ -10,6 +10,8 @@ const KEYS = [
   "DATABASE_URL",
   "NEON_AUTH_BASE_URL",
   "NEON_AUTH_COOKIE_SECRET",
+  "NEXT_PUBLIC_SITE_URL",
+  "AUTH_APP_ORIGIN",
   "BLOB_READ_WRITE_TOKEN",
   "BLOB_STORE_ID",
   "GEMINI_API_KEY",
@@ -55,10 +57,19 @@ function runVercel(args, input) {
   });
 }
 
+const PRODUCTION_SITE_URL = "https://cursor-magret-portfolio.vercel.app";
+
 const merged = {
   ...parseEnvFile(".env"),
   ...parseEnvFile(".env.local"),
 };
+
+if (!merged.NEXT_PUBLIC_SITE_URL?.trim()) {
+  merged.NEXT_PUBLIC_SITE_URL = PRODUCTION_SITE_URL;
+}
+if (!merged.AUTH_APP_ORIGIN?.trim()) {
+  merged.AUTH_APP_ORIGIN = PRODUCTION_SITE_URL;
+}
 
 let synced = 0;
 let skipped = 0;

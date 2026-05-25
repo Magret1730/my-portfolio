@@ -31,13 +31,13 @@ export function useAuthUser() {
   const loadSession = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/get-session", { credentials: "include" });
+      const res = await fetch("/api/auth/session", { credentials: "include" });
       if (!res.ok) {
         setUser(null);
         return;
       }
-      const data = (await res.json()) as GetSessionResponse;
-      setUser(mapSessionUser(data));
+      const data = (await res.json()) as GetSessionResponse | null;
+      setUser(data ? mapSessionUser(data) : null);
     } catch {
       setUser(null);
     } finally {

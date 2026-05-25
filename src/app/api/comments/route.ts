@@ -35,6 +35,7 @@ export async function GET(req: Request) {
       .select({
         id: comments.id,
         postSlug: comments.postSlug,
+        userId: comments.userId,
         authorName: comments.authorName,
         body: comments.body,
         imageUrl: comments.imageUrl,
@@ -48,9 +49,10 @@ export async function GET(req: Request) {
     const commentsPayload = rows.map((row) => ({
       id: row.id,
       postSlug: row.postSlug,
+      userId: row.userId,
       authorName: row.authorName,
       body: row.body,
-      imageUrl: row.imageUrl,
+      imageUrl: row.imageUrl?.trim() || null,
       createdAt:
         row.createdAt instanceof Date ? row.createdAt.toISOString() : row.createdAt,
     }));
@@ -106,6 +108,7 @@ export async function POST(req: Request) {
       .returning({
         id: comments.id,
         postSlug: comments.postSlug,
+        userId: comments.userId,
         authorName: comments.authorName,
         body: comments.body,
         imageUrl: comments.imageUrl,
@@ -115,9 +118,10 @@ export async function POST(req: Request) {
     const commentPayload = {
       id: comment.id,
       postSlug: comment.postSlug,
+      userId: comment.userId,
       authorName: comment.authorName,
       body: comment.body,
-      imageUrl: comment.imageUrl,
+      imageUrl: comment.imageUrl?.trim() || null,
       createdAt:
         comment.createdAt instanceof Date
           ? comment.createdAt.toISOString()

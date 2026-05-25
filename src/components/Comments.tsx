@@ -4,6 +4,7 @@ import { Button, Column, Heading, Row, Spinner, Text } from "@once-ui-system/cor
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { CommentAttachment } from "@/components/CommentAttachment";
 import styles from "@/components/Comments.module.scss";
 import { useAuthUser } from "@/lib/auth/useAuthUser";
 import { MAX_BODY } from "@/lib/comments";
@@ -11,6 +12,7 @@ import { MAX_BODY } from "@/lib/comments";
 type Comment = {
   id: string;
   postSlug: string;
+  userId: string | null;
   authorName: string;
   body: string;
   imageUrl: string | null;
@@ -34,19 +36,31 @@ function normalizeComment(raw: Record<string, unknown>): Comment {
     createdAt = created.toISOString();
   }
 
+  const imageRaw =
+    typeof raw.imageUrl === "string"
+      ? raw.imageUrl
+      : typeof raw.image_url === "string"
+        ? raw.image_url
+        : null;
+
   return {
     id: String(raw.id ?? ""),
     postSlug: String(raw.postSlug ?? raw.post_slug ?? ""),
+    userId:
+      typeof raw.userId === "string"
+        ? raw.userId
+        : typeof raw.user_id === "string"
+          ? raw.user_id
+          : null,
     authorName: String(raw.authorName ?? raw.author_name ?? "Anonymous"),
     body: String(raw.body ?? raw.content ?? ""),
-    imageUrl:
-      typeof raw.imageUrl === "string"
-        ? raw.imageUrl
-        : typeof raw.image_url === "string"
-          ? raw.image_url
-          : null,
+    imageUrl: imageRaw?.trim() ? imageRaw.trim() : null,
     createdAt,
   };
+}
+
+function canDeleteComment(comment: Comment, sessionUserId: string | undefined): boolean {
+  return Boolean(sessionUserId && comment.userId && comment.userId === sessionUserId);
 }
 
 function formatCommentDate(value: string): string {
@@ -75,6 +89,7 @@ export function Comments({ postSlug }: CommentsProps) {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const signInHref = `/auth/sign-in?redirect=${encodeURIComponent(pathname)}`;
@@ -172,6 +187,39 @@ export function Comments({ postSlug }: CommentsProps) {
     }
   };
 
+  const handleDelete = async (commentId: string) => {
+    if (!sessionUser || deletingId) {
+      return;
+    }
+
+    if (
+      !window.confirm(
+        "Delete this comment? This cannot be undone.",
+      )
+    ) {
+      return;
+    }
+
+    setDeletingId(commentId);
+    setError(null);
+
+    try {
+      const res = await fetch(`/api/comments/${encodeURIComponent(commentId)}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      const data = (await res.json()) as { error?: string };
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to delete comment.");
+      }
+      setCommentsList((prev) => prev.filter((c) => c.id !== commentId));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete comment.");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (submitting || uploadingImage || !sessionUser) {
@@ -258,32 +306,34 @@ export function Comments({ postSlug }: CommentsProps) {
                   }}
                 />
               )}
-              <Row gap="8" vertical="center" wrap>
-                <Text variant="label-strong-s" onBackground="neutral-strong">
-                  {comment.authorName}
-                </Text>
-                <Text variant="body-default-xs" onBackground="neutral-weak">
-                  {formatCommentDate(comment.createdAt)}
-                </Text>
-              </Row>
+              <div className={styles.commentHeader}>
+                <Row gap="8" vertical="center" wrap>
+                  <Text variant="label-strong-s" onBackground="neutral-strong">
+                    {comment.authorName}
+                  </Text>
+                  <Text variant="body-default-xs" onBackground="neutral-weak">
+                    {formatCommentDate(comment.createdAt)}
+                  </Text>
+                </Row>
+                {canDeleteComment(comment, sessionUser?.id) && (
+                  <Button
+                    type="button"
+                    size="s"
+                    variant="tertiary"
+                    disabled={deletingId === comment.id}
+                    onClick={() => void handleDelete(comment.id)}
+                  >
+                    {deletingId === comment.id ? "Deleting…" : "Delete"}
+                  </Button>
+                )}
+              </div>
               {comment.body ? (
                 <Text variant="body-default-m" onBackground="neutral-strong">
                   {comment.body}
                 </Text>
               ) : null}
               {comment.imageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={comment.imageUrl}
-                  alt="Comment attachment"
-                  loading="lazy"
-                  style={{
-                    maxWidth: "100%",
-                    maxHeight: 320,
-                    borderRadius: "var(--radius-s)",
-                    objectFit: "contain",
-                  }}
-                />
+                <CommentAttachment imageUrl={comment.imageUrl} />
               ) : null}
             </Column>
           ))}

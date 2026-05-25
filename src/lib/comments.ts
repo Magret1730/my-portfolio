@@ -18,20 +18,9 @@ function stripHtml(value: string): string {
   return value.replace(/<[^>]*>/g, "").trim();
 }
 
-function isAllowedBlobUrl(url: string): boolean {
-  try {
-    const parsed = new URL(url);
-    if (parsed.protocol !== "https:") {
-      return false;
-    }
-    return (
-      parsed.hostname.endsWith(".public.blob.vercel-storage.com") ||
-      parsed.hostname === "public.blob.vercel-storage.com"
-    );
-  } catch {
-    return false;
-  }
-}
+import { isAllowedBlobUrl } from "@/lib/blob-url";
+
+export { isAllowedBlobUrl } from "@/lib/blob-url";
 
 export function validateCommentInput(body: unknown): CommentValidationResult {
   if (!body || typeof body !== "object") {

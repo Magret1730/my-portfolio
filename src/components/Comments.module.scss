@@ -46,3 +46,32 @@
   white-space: nowrap;
   border: 0;
 }
+
+.commentHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+
+.commentImageLink {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  border-radius: var(--radius-s);
+  overflow: hidden;
+  border: 1px solid var(--neutral-alpha-medium);
+  background: var(--neutral-alpha-weak);
+}
+
+.commentImage {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  max-height: 320px;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--radius-s);
+}

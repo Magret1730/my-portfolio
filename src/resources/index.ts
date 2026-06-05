@@ -6,6 +6,7 @@ export {
   home,
   about,
   blog,
+  mintlifyBlog,
   work,
   gallery,
 } from "./content";

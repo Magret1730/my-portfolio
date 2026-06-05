@@ -25,6 +25,7 @@ const routes: RoutesConfig = {
   "/about": true,
   "/work": true,
   "/blog": true,
+  "/mintlify-blog": true,
   "/gallery": false,
 };
 

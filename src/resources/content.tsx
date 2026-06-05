@@ -223,6 +223,11 @@ const blog: Blog = {
   // All posts will be listed on the /blog route
 };
 
+const mintlifyBlog = {
+  label: "Mintlify Blog",
+  href: "https://magret-0e9be774.mintlify.app/blog",
+};
+
 const work: Work = {
   path: "/work",
   label: "Work",
@@ -282,4 +287,4 @@ const gallery: Gallery = {
   ],
 };
 
-export { person, social, newsletter, home, about, blog, work, gallery };
+export { person, social, newsletter, home, about, blog, mintlifyBlog, work, gallery };

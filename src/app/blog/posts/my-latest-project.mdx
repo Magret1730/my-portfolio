@@ -1,0 +1,60 @@
+---
+title: "Building TicketNest: My Latest Project"
+subtitle: "A behind-the-scenes look at creating an event ticketing platform from scratch"
+summary: "I recently shipped TicketNest, a full-stack event ticketing platform where users can browse events, book tickets, and manage their bookings."
+image: "/images/gallery/horizontal-1.jpg"
+publishedAt: "2026-06-05"
+tag: "Projects"
+---
+
+## The idea
+
+Every great project starts with a problem worth solving. I wanted to build something that felt real — not just another tutorial app, but a platform people could actually use to discover events and grab tickets without the usual friction.
+
+That idea became **TicketNest**.
+
+## What it does
+
+TicketNest is an event ticketing platform with a straightforward flow:
+
+- Browse upcoming events with filters and search
+- View event details, pricing, and availability
+- Book tickets and complete payment in a few steps
+- Manage bookings from a personal dashboard
+
+The goal was to keep the experience simple on the surface while handling the messy parts — inventory, payments, and order state — behind the scenes.
+
+## Tech stack
+
+I leaned on tools I already knew and ones I wanted to get better at:
+
+- **Next.js** for the frontend and API routes
+- **TypeScript** for type safety across the codebase
+- **A relational database** for events, tickets, and user data
+- **Stripe** (or a similar payment provider) for checkout
+
+Nothing exotic — just a solid stack that lets you move fast and refactor without regret.
+
+## Challenges along the way
+
+The hardest part wasn't the UI. It was getting the booking flow right: what happens when two people try to buy the last ticket at the same time? How do you handle failed payments without leaving orphaned reservations?
+
+I spent a lot of time on:
+
+1. **Concurrency** — making sure ticket counts stay accurate under load
+2. **State management** — tracking bookings from "pending" to "confirmed" to "cancelled"
+3. **Error handling** — giving users clear feedback when something goes wrong
+
+Each of those taught me more than any feature I shipped smoothly on the first try.
+
+## What I learned
+
+Shipping TicketNest reminded me that side projects are as much about process as product. Writing tests for the payment flow, documenting API contracts, and deploying early all paid off when I needed to iterate quickly.
+
+If you're starting something similar, my advice: pick one user journey — browse, book, pay — and nail it before adding the rest.
+
+## What's next
+
+There's still plenty on the roadmap: email confirmations, organizer dashboards, and better analytics for event hosts. For now, I'm happy to have something live that solves a real problem, even if the copy on this blog post is just sample text until I write the real story.
+
+Check out the project on [GitHub](https://github.com/Magret1730/ticketnest) if you'd like to explore the code.
